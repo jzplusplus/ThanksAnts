@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <script type="text/javascript">
+            document.addEventListener( 'DOMContentLoaded', function () {
+                word = decodeURIComponent(window.location.search.substring(1))
+                
+                if(word.length < 1) word = "ants";
+
+                vowels = "aeiouy";
+                var i;
+                for(i=0; i < word.length; i++)
+                {
+                    if(vowels.indexOf(word[i]) != -1) break;
+                }
+
+                thanks = "Thanks, <span style='text-decoration: underline;'>"+word+"</span>."
+                thanks2 = "<br/>Th" + word.substring(i) +".";
+
+                document.getElementById('thnks').innerHTML = thanks;
+                
+                setTimeout(function(){document.getElementById('thnks').innerHTML += thanks2;}, 1500);
+            }, false );
+            
+            var editing  = false;
+
+            if (document.getElementById && document.createElement) {
+                var butt = document.createElement('BUTTON');
+                var buttext = document.createTextNode('GO');
+                butt.appendChild(buttext);
+                butt.onclick = saveEdit;
+            }
+
+            function catchIt(e) {
+                if (editing) return;
+                if (!document.getElementById || !document.createElement) return;
+                if (!e) var obj = window.event.srcElement;
+                else var obj = e.target;
+                if (obj.tagName == 'TEXTAREA') return;
+                if (obj.nodeName != 'SPAN') return;
+                var x = obj.innerHTML;
+                var y = document.createElement('TEXTAREA');
+                var z = obj.parentNode;
+                
+                y.rows = 1;
+                y.cols = 10;
+                y.style = "width: auto;font-size: 100px; text-align: center;";
+                y.onkeyup = function(e) {
+                    e = e || event;
+                    if(e.keyCode === 13) saveEdit();
+                    return true;
+                }
+                
+                z.insertBefore(y,obj);
+                z.insertBefore(butt,obj);
+                z.removeChild(obj);
+                y.value = x;
+                y.focus();
+                y.select();
+                editing = true;
+            }
+
+            function saveEdit() {
+                var area = document.getElementsByTagName('TEXTAREA')[0];
+                editing = false;
+                var url = [location.protocol, '//', location.host, location.pathname].join('');
+                
+                window.location.href = url + '?' + area.value;
+            }
+
+            document.onclick = catchIt;
+        </script>
+    </head>
+    <body>
+        <div id='thnks' style="font-size: 100px; text-align: center;">
+            Thanks, <span style="text-decoration: underline;">clay</span>.
+            <br/>
+            Thay.
+        </div>
+    </body>
+</html>
